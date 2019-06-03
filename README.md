@@ -9,7 +9,10 @@ Grab challenge submission for Image Classification
     - Model performance
     - Github (Documenttation, Commits, Code)
 
-#ToDo:
-    - Read Import Data
-    - Visual Analysis
+#ToDo First Model:
+    - Read Import Data (Done)
+    - Visual Analysis (Done)
     - Baseline on Simple and Complex models
+
+#ToDo Second Model (MTL):
+
