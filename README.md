@@ -16,3 +16,5 @@ Grab challenge submission for Image Classification
 
 #ToDo Second Model (MTL):
 
+08/06/2018 (Baseline on Simple and Complex Models)
+08/06/2018 (Try Training Simple Hard parameter sharing MTL)
