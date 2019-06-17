@@ -4,7 +4,6 @@ import os
 import time
 import utils
 import torch
-import horovod
 import torchvision
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
@@ -22,7 +21,7 @@ parser.add_argument('--data-folder', type=str, dest='data_folder', help="data mo
 parser.add_argument('--training-folder', type=str, dest='train_folder', help="training folder path")
 parser.add_argument('--annotation-file', type=str, dest='annotation', help="annotation file path")
 parser.add_argument('--meta-file', type=str, dest="meta", help="meta data file path")
-parser.add_argument('--training-split', type=float, nargs='?', dest="training_split", const=0.8, help="training and validation split. Default at .8")
+parser.add_argument('--test-split', type=float, nargs='?', dest="test_split", const=0.2, help="training and validation split. Default at .8")
 parser.add_argument('--learning-rate', type=float, dest="lr", help="set learning rate")
 parser.add_argument('--class-train', type=str, dest="class_", help="specify which class to train on (class_ID, type_ID, year_ID, maker_ID)")
 parser.add_argument('--nb_epochs', type=int, nargs='?', dest="epochs", const=30, help="Number of epochs to train the model")
@@ -125,13 +124,15 @@ class ImbalancedDatasetSampler(torch.utils.data.sampler.Sampler):
     def __len__(self):
         return self.num_samples
 
-image_transformers = {'train': transforms.Compose([transforms.Resize((244,244)),
+image_transformers = {'train': transforms.Compose([transforms.Resize(230),
+                                                   transforms.CenterCrop(224),
                                                    transforms.RandomRotation(degrees=60),
                                                    transforms.RandomHorizontalFlip(0.8),
                                                    transforms.ColorJitter(brightness=0.8, contrast=0.8),
                                                    transforms.ToTensor()]),
-                      'validation': transforms.Compose([transforms.Resize((244,244)),
-                                                       transforms.ToTensor()
+                      'validation': transforms.Compose([transforms.Resize(230),
+                                                        transforms.CenterCrop(224),
+                                                        transforms.ToTensor()
                                                        ])
                      }
                      
@@ -146,7 +147,7 @@ meta_data = loadmat(meta_path)
 meta_data = np.concatenate(meta_data["class_names"][0])
 
 dataset = utils.Load_Images(root_dir = training_folder, 
-                            annotations_path=annotations_path, seed=seed, test_split=args.training_split)
+                            annotations_path=annotations_path, seed=seed, test_split=args.test_split)
 
 training_data = car_dataset(dataset["training"],
                             root_dir = training_folder,
@@ -172,7 +173,7 @@ print("GPU using: {}".format(torch.cuda.get_device_name(0)))
 vgg_based = torchvision.models.vgg19(pretrained=True) 
 
 for idx,param in enumerate(vgg_based.parameters()):
-    if idx <= 32:
+    if idx <= 35:
         param.requires_grad = False
     
 # Modify the last layer
@@ -192,7 +193,7 @@ optimizer_ft = torch.optim.Adam(vgg_based.parameters(), lr= args.lr, weight_deca
 def train_model(model, criterion, optimizer, num_epochs=1):
     since = time.time()
     best_model_wts = copy.deepcopy(model.state_dict())
-    best_loss = 100
+    best_acc = 0.0
     history = []
     for epoch in range(num_epochs):
         print('Epoch {}/{}'.format(epoch + 1, num_epochs))
@@ -220,7 +221,6 @@ def train_model(model, criterion, optimizer, num_epochs=1):
 
             loss.backward()
             optimizer.step()
-            
             # Compute the total loss for the batch and add it to valid_loss
             training_loss += loss.item() * inputs.size(0)
             
@@ -281,9 +281,9 @@ def train_model(model, criterion, optimizer, num_epochs=1):
         print("Epoch : {:03d}, Training: Loss: {:.4f}, Accuracy: {:.4f}%, \n\t\tValidation : Loss : {:.4f}, Accuracy: {:.4f}%".format(epoch + 1, avg_train_loss, avg_train_acc*100, avg_valid_loss, avg_valid_acc*100))
         
         # deep copy the model
-        if avg_valid_loss < best_loss:
-            print('saving with loss of {}'.format(avg_valid_loss), 'improved over previous {}'.format(best_loss))
-            best_loss = avg_valid_loss
+        if avg_valid_acc > best_acc:
+            print('saving with acc of {}'.format(avg_valid_acc), 'improved over previous {}'.format(best_acc))
+            best_acc = avg_valid_acc
             best_model_wts = copy.deepcopy(model.state_dict())
 
     time_elapsed = time.time() - since
@@ -297,4 +297,3 @@ model_, history = train_model(vgg_based, criterion, optimizer_ft, num_epochs=arg
 
 os.makedirs('outputs', exist_ok=True)
 torch.save(model_.state_dict(), 'outputs/vgg16_{}_weights.pth'.format(args.class_))
-torch.save(model_.state_dict(), 'car_data/vgg16_{}_weights.pth'.format(args.class_))

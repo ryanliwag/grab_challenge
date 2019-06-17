@@ -1,68 +1,27 @@
-# My Submission for the Grab AI challenge.
+# Grab AI challenge Submission
 
-### Problem Statment
-Given a dataset of distinct car images, can you automatically recognize the car model and make?
-Yea, will give it a try
-
-Here used pytorch running on python 3.6.5 which is the nightly issue.
+Sadly due to time constraints and work. I wasn't able to finish the project on time but I learned alot and had a ton of fun with the challenge.
 
 ### Dataset
 
-Dataset had 196 classes. 
+Ideally at the start I was simply thing about implementing a ensemble.  But after seeing the labeled dataset, I wanted to try something new. 
 
-### First Model (Transfer Learning VGG16)
+  **image insert**
 
-So for my first attempt at modeling, I went ahead with using pretrained models.
-Configured a weighted random sampler to sample from my imbalanced dataset () and had included pytorch prebuild image transformers hopefully to prevent some overfitting.
+The Problem statement requires the classification algorithm to identify the Car Maker and Type. There is 196 labeled classes in the dataset, most of the classes have a the type, maker and year included in the label.  
 
+### Multi-Task Learning
 
+So the motivation behind using this approach was reading through sebastian ruders article[http://ruder.io/multi-task/] (must read). The objective is to improve the model's performance on the current task by having it learn of different but related concepts to the original task. Also training on single task brings problems of its own such over fitting, imbalanced dataset and too much reliance on the model to learn the features we need. 
 
-1. First ordered list item
-2. Another item
+I will be trying 2 approaches I have picked up from the article which is **Hard Parameter Sharing** and  **Model Training with Auxiliary Tasks**. 
 
-### Second Model (Multi Task Learning Model)
-
-
-
-#learning through hints https://www.sciencedirect.com/science/article/pii/0885064X9090006Y?via%3Dihub
+### MTL (Hard parameter sharing)
+[[1]](http://ruder.io/multi-task/index.html#fn1)  
 
 
-image: https://www.google.com/search?q=multi+task+learning&source=lnms&tbm=isch&sa=X&ved=0ahUKEwic8OiK4u7iAhVHUd4KHQ6JA2sQ_AUIECgB&biw=1895&bih=952#imgrc=HWg77j4p2pjDNM:
-[I'm an inline-style link](https://www.google.com)
 
-[I'm an inline-style link with title](https://www.google.com "Google's Homepage")
-
-[I'm a reference-style link][Arbitrary case-insensitive reference text]
-
-[I'm a relative reference to a repository file](../blob/master/LICENSE)
-
-[You can use numbers for reference-style link definitions][1]
-
-Or leave it empty and use the [link text itself].
-![alt text](https://raw.githubusercontent.com/username/projectname/branch/path/to/img.png)
+### MTL (Auxiliary Task Learning)
 
 
-# How to test on your own Dataset
-
-#ToDo First Model:
-    - Read Import Data (Done)
-    - Visual Analysis (Done)
-    - Baseline on Simple and Complex models
-
-#ToDo Second Model (MTL):
-
-08/06/2018 (Baseline on Simple and Complex Models)
-08/06/2018 (Try Training Simple Hard parameter sharing MTL)
-
-
-#Running in Microsoft azure ML:
-1.Create workspace (https://docs.microsoft.com/en-us/azure/machine-learning/service/quickstart-run-cloud-notebook)
-
-2.
-
-
-# 1st Approach (Transfer Learning with Complex and Simple Models)
-
-# 2nd Approach (Multi Task Learning)
-
-# 3rd Approach (Solve)
+[Handlebars templates](http://handlebarsjs.com/),
