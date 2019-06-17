@@ -1,6 +1,6 @@
 # Grab AI challenge Submission
 
-Sadly due to time constraints and work. I wasn't able to finish the project on time but I learned alot and had a ton of fun with the challenge.
+Sadly due to time constraints and work in general. I wasn't able to fully finish this project (In all honesty I think this will take ma a couple of weeks at least) but nonetheless I learned alot and had a ton of fun with the challenge.
 
 ### Dataset
 
@@ -8,7 +8,7 @@ Ideally at the start I was simply thinking about implementing an ensemble. But a
 
 ![summary](https://raw.githubusercontent.com/ryanliwag/grab_challenge/master/Images/data_summary.PNG)
 
-The Problem statement requires the classification algorithm to identify the Car Maker and Type. After some analysis and visualization of the dataset, I was already thinking of changing to another challenge. The dataset is very sparse, there is a low amount of samples per class compared to the feature dimensions. Also I guess I will be re-scaling this data to smaller images, losing quite a bit of features along the way. To hopefully work around this problem I am trying to build multi-task learning models. There is 196 labeled classes in the dataset, most of the classes have the type, maker and year included in the label.  These labels can hopefully serve as Auxiliary tasks to help train the model.
+The Problem statement requires the classification algorithm to identify the Car Maker and Type. The dataset is very sparse, there is a low amount of samples per class compared to the feature dimensions. Also resizing this data to smaller images causes us to lose features. To hopefully work around this problem I am trying to implement multi-task learning models. There is 196 labeled classes in the dataset, most of the classes have the type, maker and year included in the label. These labels can hopefully serve as Auxiliary tasks to help train the model.
 
 ### Multi-Task Learning
 
