@@ -6,6 +6,8 @@ from sklearn.model_selection import train_test_split
 from sklearn import metrics
 import re
 import os
+import gzip
+import shutil
 
 def RGB_check(filepath):
     '''
@@ -118,5 +120,3 @@ def get_Maker(car_classes):
     carMaker_ID = Label_encoder(carMaker)
 
     return carMaker, carMaker_ID
-
-
