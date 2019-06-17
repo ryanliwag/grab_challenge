@@ -2,6 +2,8 @@ from PIL import Image
 import numpy as np
 from scipy.io import loadmat
 from sklearn import preprocessing
+from sklearn.model_selection import train_test_split
+from sklearn import metrics
 import re
 import os
 
@@ -17,11 +19,19 @@ def RGB_check(filepath):
 
     return False
 
+
+'''
+To Do
+def get_ROC_values()
+
+f,t,th = metrics.roc_curve(y, scores)
+'''
+
 def Load_Images(root_dir, annotations_path, 
-                seed, train_split = .8, 
+                seed=7, test_split = .2, 
                 dataset_shuffle=True):
     '''
-    Take annotations, files, and metafdata
+    Take annotations, files, and metadata
 
     return a dictionary with values.
 
@@ -29,19 +39,18 @@ def Load_Images(root_dir, annotations_path,
     '''
     annotations = loadmat(annotations_path)
 
+    #Disregard BW images
     file_names = [file for file in annotations["annotations"][0] if RGB_check(os.path.join(root_dir, file[-1][0]))]
-    
-    if dataset_shuffle:
-        np.random.seed(seed)
-        np.random.shuffle(file_names)
 
-    nb_samples = len(file_names)
-    t_idx = int(nb_samples * train_split)
+    #training split
+    file_classes = [file_class[-2][0][0] for file_class in file_names]
+    training_files, valid_test_files = train_test_split(file_names, test_size=test_split, random_state=seed, stratify=file_classes)
 
-    train_samples = file_names[:t_idx]
-    validation_samples = file_names[t_idx:]
+    #validation and testing split
+    valid_test_classes = [file_class[-2][0][0] for file_class in valid_test_files]
+    validation_files, testing_files = train_test_split(valid_test_files, test_size=0.25, random_state=seed, stratify=valid_test_classes)
 
-    dataset = {"training":train_samples, "validation":validation_samples}
+    dataset = {"training":training_files, "validation":validation_files, "test":testing_files}
 
     return dataset
 
@@ -109,3 +118,5 @@ def get_Maker(car_classes):
     carMaker_ID = Label_encoder(carMaker)
 
     return carMaker, carMaker_ID
+
+

@@ -1,2 +1,6 @@
 #ignore data and all files inside
 data/
+cars_training/
+models/
+outputs/
+config.json
