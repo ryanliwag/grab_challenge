@@ -1,7 +1,5 @@
 # Grab AI challenge Submission
 
-Sadly due to time constraints and work in general. I wasn't able to fully finish this project (In all honesty I think this will take ma a couple of weeks at least) but nonetheless I learned alot and had a ton of fun with the challenge.
-
 ### Dataset
 
 Ideally at the start I was simply thinking about implementing an ensemble. But after seeing the labeled dataset, I wanted to try a multi task learning approach. 
